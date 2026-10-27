@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 test('returns 302 when no payload is passed with error messages', function () {
     $response = $this->postJson('/api/login');
 

@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 test('returns 302 when no payload is passed with error messages', function () {
     $response = $this->postJson('/api/login');
-
+    Log::debug($response->json());
     $response->assertStatus(422)
         ->assertExactJson([
-            'message' => 'The email field is required. (and 1 more error)',
+            'success' => false,
+            'message' => 'Validation errors occurred.',
             'errors' => [
                 'email' => [
                     'The email field is required.',
@@ -17,4 +18,11 @@ test('returns 302 when no payload is passed with error messages', function () {
                 ],
             ],
         ]);
+});
+
+test('returns 401 for invalid user user', function () {
+    $response = $this->postJson('/api/login', ["email" => "john@example.com", "password" => "12345"]);
+    dd($response->json());
+    $response->assertStatus(401);
+
 });

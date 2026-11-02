@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Helpers;
 
 use Illuminate\Http\JsonResponse;
-use App\Helpers\ApiResponse;
 final class ApiResponse
 {
+    const HTTP_CREATED = 201;
     public static function success(string $message, mixed $data = null, int $status = 200): JsonResponse
     {
         return response()->json([

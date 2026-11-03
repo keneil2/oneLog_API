@@ -15,6 +15,6 @@ class UserController extends Controller
     {
         $responseMessage = "User created Successfully!"; 
         $createUserAction->handle($request->validated());
-        return ApiResponse::success($request, ApiResponse::HTTP_CREATED);
+        return ApiResponse::success($responseMessage, ApiResponse::HTTP_CREATED);
     }
 }

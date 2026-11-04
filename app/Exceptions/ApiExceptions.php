@@ -5,17 +5,19 @@ declare(strict_types=1);
 namespace App\Exceptions;
 
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
-use App\Helpers\ApiResponse;
+use App\Helpers\ApiResponseHandler;
 class ApiExceptions
 {
     public $exceptions = [
         HttpResponseException::class => 'handleValidationExceptions',
-        AuthenticationException::class => "handleAuthException"
+        AuthenticationException::class => "handleAuthException",
+        QueryException::class =>"handleQueryException"
     ];
 
     public function handleValidationExceptions(ValidationException $exception,Request $request): JsonResponse
@@ -24,19 +26,32 @@ class ApiExceptions
 
         return response()->json([
             'success' => false,
+            'title'=>"Validation Error Occured",
             'errors' => $exception->status,
         ], $status);
 
     }
 
 
-   function handleAuthException(AuthenticationException $exception,Request $request){
+   function handleAuthException(AuthenticationException $exception,Request $request):JsonResponse{
     $message = $exception->getMessage();
     $this->localLog($message,$request->data);    
-   return ApiResponse::error($message,401);
+   return ApiResponseHandler::error($message,401,"Unathenticated",);
+    }
+
+    public function handleQueryException(QueryException $exception,Request $request):JsonResponse{
+       $ms=$exception->getMessage();
+       $this->localLog($ms,[
+      "request"=>$request,
+      "RawSQL"=>$exception->getRawSql(),
+      "file"=>$exception->getFile(),
+      "line number"=>$exception->getLine()
+       ]);
+       return ApiResponseHandler::error("Opps! Something wrong please try again or contact the website adminstrator if the issue persist!");
     }
     public function localLog($message, array|null $data): void
     {
         Log::error($message, [$data]);
     }
+
 }

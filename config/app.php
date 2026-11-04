@@ -125,4 +125,16 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Login Attempts Per Minute
+    |--------------------------------------------------------------------------
+    |
+    | The number of failed login attempts allowed per minute for a given
+    | email before further attempts are rate limited.
+    |
+    */
+
+    'login_attempts_per_minute' =>  env('LOGIN_ATTEMPTS_PER_MINUTE', 3),
+
 ];

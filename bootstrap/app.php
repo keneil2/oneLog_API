@@ -17,6 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->validateCsrfTokens(except: [
+        'paddle/*',
+    ]);
         $middleware->statefulApi();
     })
     ->withExceptions(function (Exceptions $exceptions): void {

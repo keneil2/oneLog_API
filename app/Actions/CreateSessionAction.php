@@ -7,6 +7,7 @@ namespace App\Actions;
 use App\Helpers\ApiResponseHandler;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
@@ -16,7 +17,7 @@ final class CreateSessionAction
     /**
      * @param  array{email: string, password: string}  $credentials
      */
-    public function handle(array $credentials): JsonResponse
+    public function handle(array $credentials, Request $request): JsonResponse
     {
         $key = 'login-attempt-for:' . strtolower($credentials['email']);
 
@@ -25,7 +26,6 @@ final class CreateSessionAction
         $this->checkRateLimit($key, $failedMessage);
         if (Auth::attempt($credentials)) {
             RateLimiter::clear($key);
-
             return ApiResponseHandler::success('Authenticated Successfully');
         }
 

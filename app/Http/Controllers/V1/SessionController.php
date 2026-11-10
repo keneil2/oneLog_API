@@ -13,6 +13,6 @@ class SessionController extends Controller
 {
     public function store(StoreSessionRequest $request, CreateSessionAction $createSessionAction): JsonResponse
     {
-        return $createSessionAction->handle($request->validated());
+        return $createSessionAction->handle($request->validated(),$request);
     }
 }

@@ -38,4 +38,5 @@ test("succefull login attempt",function(){
      User::factory()->create(["email"=>"test@example.com", "password"=> "secret"]);
      $response = $this->postJson('/api/login', ["email"=>"test@example.com", "password"=> "secret"]);
      $response->assertStatus(200);
+     $this->get("/auth-test");
 });

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('useages', function (Blueprint $table) {
             $table->id();
-            $table->foreign("billable")->references("id")->on("users")->cascadeOnDelete();
-            $table->foreign("plan_feature_id")->references("id")->on("plan_features")->cascadeOnDelete();
+            $table->foreignId("billable")->references("id")->on("users")->cascadeOnDelete();
+            $table->foreignId("plan_feature_id")->references("id")->on("plan_features")->cascadeOnDelete();
             $table->timestamp("period_start");
             $table->timestamp("period_end");
             $table->timestamps();

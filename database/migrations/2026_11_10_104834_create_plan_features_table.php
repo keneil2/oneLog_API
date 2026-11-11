@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('plan_features', function (Blueprint $table) {
             $table->id();
-            $table->integer("quota_amount")->default(0); 
-            $table->foreign("plan_id")->references("id")->on("plans");
-            $table->foreign("feature_id")->references("id")->on("features");
+            $table->bigInteger("quota_amount"); 
+            $table->foreignId("plan_id")->references("id")->on("plans");
+            $table->foreignId("feature_id")->references("id")->on("features");
             $table->timestamps();
         });
     }

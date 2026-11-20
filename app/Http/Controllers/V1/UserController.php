@@ -21,16 +21,8 @@ class UserController extends Controller
     {
         $responseMessage = "User created Successfully!"; 
         
-        $createUserAction->handle($request->validated());
+       $createUserAction->handle($request->validated());
 
-        $productIds = [
-            config('plans.free.paddle_id'),
-        ];
-
-        $planPrices = $this->getPlanPricesAction->handle($productIds);
-
-        $this->createSubscriptionAction->handle([$planPrices[0]['prices'][0]['id']]);
-
-        return ApiResponse::success($responseMessage, ApiResponse::HTTP_CREATED);
+        return ApiResponse::success(message: $responseMessage, status: ApiResponse::HTTP_CREATED);
     }
 }

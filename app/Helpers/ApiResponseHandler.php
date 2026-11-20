@@ -7,6 +7,7 @@ namespace App\Helpers;
 use Illuminate\Http\JsonResponse;
 final class ApiResponseHandler
 {
+    const HTTP_CREATED = 201;
     public static function success(string $message, mixed $data = null, int $status = 200): JsonResponse
     {
         return response()->json([

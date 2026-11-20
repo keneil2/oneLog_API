@@ -9,10 +9,8 @@ use App\Actions\GetSubcriptionAction;
 use App\Helpers\ApiResponseHandler;
 use App\Http\Controllers\Controller;
 use App\Models\Plan;
-
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
-use Laravel\Paddle\Cashier;
+use Illuminate\Http\Request;
 
 class SubscriptionController extends Controller
 {
@@ -29,23 +27,45 @@ class SubscriptionController extends Controller
             config('plans.pro.paddle_id'),
             config('plans.enterprise.paddle_id'),
         ];
-       
+
         $planPrices = $this->getPlanPricesAction->handle($productIds);
 
-       $plans = $this->action->handle($planPrices);
+        $plans = $this->action->handle($planPrices);
 
         return ApiResponseHandler::success(
             'subscriptions ',
             [
-                "plans" => $plans,
+                'plans' => $plans,
             ]
         );
     }
 
-    public function store()
+    public function show(Request $request): JsonResponse
     {
+        $item = $request->user()->subscription()?->items()->first();
+        $plan = Plan::where('paddle_id', $item?->product_id)->first();
 
+        $price = null;
 
+        if ($plan !== null) {
+            $product = $this->getPlanPricesAction->handle([$plan->paddle_id])[0];
+            $price = collect($product['prices'])->firstWhere('id', $item->price_id);
+        }
+
+        $subscription = [
+            'subscription_name' => $plan !== null ? $plan->name : "free",
+            'price' => $price !== null ? $price : [
+                'billing_cycle' => [
+                    'interval' => 'month',
+                    'frequency' => null,
+                ],
+                'unit_price' => [
+                    'amount' => '0',
+                    'currency_code' => null,
+                ],
+            ],
+        ];
+
+        return ApiResponseHandler::success('subscription', $subscription);
     }
-
 }

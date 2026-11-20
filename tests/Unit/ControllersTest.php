@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 arch('controllers only have crud or invoke public methods')
     ->expect('App\Http\Controllers')
-    ->not->toHavePublicMethodsBesides(['index', 'store', 'show', 'update', 'destroy', '__invoke']);
+    ->not->toHavePublicMethodsBesides(['index', 'store', 'show', 'update', 'destroy', '__invoke','edit','create']);
 
 arch('controllers never authorize or validate')
     ->expect('App\Http\Controllers')

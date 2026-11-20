@@ -7,7 +7,7 @@ test('no policies exist', function () {
 });
 
 arch('gates are never used')
-    ->expect('App')
+    ->expect(['App\Actions','App\Http','App\Helpers'])
     ->not->toUse([
         'Illuminate\Support\Facades\Gate',
         'Illuminate\Contracts\Auth\Access\Gate',

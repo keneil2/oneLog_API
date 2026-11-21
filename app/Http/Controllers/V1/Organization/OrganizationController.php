@@ -25,7 +25,7 @@ class OrganizationController extends Controller
     public function store(OrganizationRequest $request,StoreLogoAction $action): JsonResponse
     {
         $file = $action->handle($request);
-
+        
       Organization::create([...$request->only(["billing_address","name","type"]),'logo' => $file ? $file : null,'owner_id' => auth()->user()->id]);
       return ApiResponseHandler::success(message: "Organization Created Successfully!", status: ApiResponseHandler::HTTP_CREATED);
     }

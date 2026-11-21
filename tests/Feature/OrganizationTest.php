@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use App\Models\Organization;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
@@ -26,6 +27,9 @@ test('authenticated user can create an organization', function () {
     ]);
 });
 
+
+
+
 test('authenticated user can create an organization with a logo', function () {
     Storage::fake(config('filesystems.default'));
 
@@ -42,7 +46,7 @@ test('authenticated user can create an organization with a logo', function () {
 
     $response->assertStatus(201);
 
-    $logoPath = 'logos/'.$payload['logo']->hashName();
+    $logoPath = 'logos/' . $payload['logo']->hashName();
 
     Storage::disk(config('filesystems.default'))->assertExists($logoPath);
 
@@ -53,8 +57,29 @@ test('authenticated user can create an organization with a logo', function () {
     ]);
 });
 
-test("unauthenticated user cant create organization",function(){
-$payload = [
+
+
+
+
+test("user can create only one organization", function () {
+    $user = User::factory()->create(); 
+    Organization::factory()->create();
+         $payload = [
+        'name' => 'Acme Inc',
+        'type' => 'company',
+        'billing_address' => '123 Main Street',
+    ];
+
+    $response = $this->actingAs($user)->postJson("/api/organization",$payload);
+    $response->assertStatus(403);
+});
+
+
+
+
+
+test("unauthenticated user cant create organization", function () {
+    $payload = [
         'name' => 'Acme Inc',
         'type' => 'company',
         'billing_address' => '123 Main Street',
@@ -62,8 +87,8 @@ $payload = [
     ];
 
 
-$response = $this->postJson('/api/organization');
- $response->assertStatus(401);
+    $response = $this->postJson('/api/organization');
+    $response->assertStatus(401);
 
 });
 

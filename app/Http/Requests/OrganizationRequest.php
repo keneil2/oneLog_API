@@ -7,7 +7,8 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-
+use App\Models\Organization;
+use Illuminate\Auth\Access\AuthorizationException;
 class OrganizationRequest extends FormRequest
 {
     /**
@@ -15,9 +16,14 @@ class OrganizationRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $HasOrg = Organization::where("owner_id", auth()->user()->id)->exists();
+        return !$HasOrg;
     }
-
+    
+    protected function failedAuthorization(): void
+{
+    throw new AuthorizationException('You already created an organization.');
+}
     /**
      * Get the validation rules that apply to the request.
      *
@@ -28,7 +34,7 @@ class OrganizationRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required', 'string', 'in:individual,company,personal'],
-            'billing_address' => ['nullable', 'string', 'max:255'], 
+            'billing_address' => ['nullable', 'string', 'max:255'],
             'logo' => ['nullable', 'max:255', 'file', 'mimes:jpeg,png'],
         ];
     }
